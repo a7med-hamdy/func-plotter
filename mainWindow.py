@@ -14,7 +14,33 @@ class MainWindow(QMainWindow):
         loader = QUiLoader()
         self.setCentralWidget(loader.load(os.path.join("assets","gui.ui"), self))
 
-        self.title = self.findChild(QLabel, "title")
-        self.title.setFont(QFont(FONT_AV, 32))
+
+        # set appropriate fonts
+        self.findChild(QLabel, "title").setFont(QFont(FONT_AV, 32))
+        self.findChild(QLabel, "label1").setFont(QFont("Consolas", 14))
+        self.findChild(QLabel, "label2").setFont(QFont("Consolas", 14))
+        self.findChild(QLabel, "label3").setFont(QFont("Consolas", 14))
+        
+        
+        
+        self.function = self.findChild(QLineEdit, "function")
+        self.function.setFont(QFont("Consolas", 18))
+        
+        self.min = self.findChild(QLineEdit, "min")
+        self.min.setFont(QFont("Consolas", 16))
+        
+        self.max = self.findChild(QLineEdit, "max")
+        self.max.setFont(QFont("Consolas", 16))
+        
+        
+        self.eval_button = self.findChild(QPushButton, "eval")
+        self.eval_button.setFont(QFont("Consolas", 16))
+        self.eval_button.clicked.connect(self.handle_eval)
         
         self.show()
+    
+    def handle_eval(self):
+        print("eval")
+        print(self.function.text())
+        print(self.min.text())
+        print(self.max.text())
