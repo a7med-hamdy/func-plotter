@@ -228,21 +228,7 @@ border: 2px solid rgb(255, 85, 0);
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QPushButton{
-border: 1px solid white;
-border-radius: 20px;
-color: rgb(247, 255, 217);
-background-color: rgb(255,85,0);
-}
-
-QPushButton:hover{
-	color:rgb(255,85,0);
-	background-color:  rgb(247, 255, 217);
-}
-
-QPushButton:pressed{
-	border: 3px solid rgb(255,85,0);
-}</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>Evaluate</string>
@@ -250,6 +236,22 @@ QPushButton:pressed{
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="feedback">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>280</y>
+     <width>991</width>
+     <height>381</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>text</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
  </widget>
  <resources>

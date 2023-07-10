@@ -1,8 +1,10 @@
 from PySide2.QtWidgets import *
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QFont
+from PySide2.QtCore import *
+from PySide2.QtGui import *
 from PySide2.QtUiTools import QUiLoader
 from config import *
+from Parser import Parser
+from button import button
 import os
 
 class MainWindow(QMainWindow):
@@ -10,7 +12,10 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setFixedSize(1000, 700)
         self.setWindowTitle("App")
-
+        
+        self.animations = []
+        self.Parser = Parser()
+        # load the ui file
         loader = QUiLoader()
         self.setCentralWidget(loader.load(os.path.join("assets","gui.ui"), self))
 
@@ -33,14 +38,32 @@ class MainWindow(QMainWindow):
         self.max.setFont(QFont("Consolas", 16))
         
         
-        self.eval_button = self.findChild(QPushButton, "eval")
-        self.eval_button.setFont(QFont("Consolas", 16))
-        self.eval_button.clicked.connect(self.handle_eval)
+        self.eval_button = button(self.findChild(QPushButton, "eval"))
+        self.eval_button.button.setFont(QFont("Consolas", 16))
+        self.eval_button.button.clicked.connect(self.handle_eval)
+        self.animations.append(self.eval_button._animation)
         
-        self.show()
     
+        
+        
+        # self.feedback  = self.findChild(QLabel, "feedback")
+        # self.feedback.setFont(QFont("Consolas", 16))
+        
+        
+        # self.animation = QPropertyAnimation(self.feedback, b"font")
+        # self.animation.setDuration(2000)  # 1000 milliseconds = 1 second
+        # #self.animation.setEasingCurve(QEasingCurve.OutElastic)
+        # self.animation.setStartValue(QFont("Consolas", 16))
+        # self.animation.setEndValue(QFont("Consolas", 50))
+        # self.animation.start()
+        self.show()
+        
+
+    # a function that is called when the evalualte button is clicked
     def handle_eval(self):
-        print("eval")
-        print(self.function.text())
-        print(self.min.text())
-        print(self.max.text())
+        expression = self.Parser.parse_expression(self.function.text())
+        print(expression)
+        min_x = self.Parser.parse_value(self.min.text())
+        print(min_x)
+        max_x = self.Parser.parse_value(self.max.text())
+        print(max_x)
