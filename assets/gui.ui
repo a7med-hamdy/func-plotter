@@ -148,7 +148,7 @@ border: 2px solid rgb(255, 85, 0);
      </widget>
     </item>
     <item row="0" column="3">
-     <widget class="QLineEdit" name="max">
+     <widget class="QLineEdit" name="min">
       <property name="minimumSize">
        <size>
         <width>25</width>
@@ -189,7 +189,7 @@ border: 2px solid rgb(255, 85, 0);
      </widget>
     </item>
     <item row="2" column="3">
-     <widget class="QLineEdit" name="min">
+     <widget class="QLineEdit" name="max">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -251,6 +251,16 @@ border: 2px solid rgb(255, 85, 0);
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="Plotter" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>250</y>
+     <width>981</width>
+     <height>441</height>
+    </rect>
    </property>
   </widget>
  </widget>

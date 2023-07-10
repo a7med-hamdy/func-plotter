@@ -2,8 +2,9 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
+
 class button():
-    def __init__(self, button):
+    def __init__(self, button: QPushButton):
         self.button = button
         # 2 color to interpolate between them
         self.color1 = (255, 85, 0)
@@ -24,7 +25,7 @@ class button():
         self.flag = True # flag to change the direction of animation and reverse it
     
     # a function that is called when the animation updates
-    def _animate(self, value):
+    def _animate(self, value : float) -> None:
         # linear interpolation between color1 and color2
         interpolated_color = (int(self.color1[0] + value * (self.color2[0] - self.color1[0])),
                       int(self.color1[1] + value * (self.color2[1] - self.color1[1])),
@@ -33,8 +34,9 @@ class button():
         # convert the interpolated color to a QColor object
         color = QColor(interpolated_color[0], interpolated_color[1], interpolated_color[2])
         # create new style sheet for the button
-        grad = f"QPushButton{{border: 1px solid {color.name()};border-radius: 20px;color: rgb(247, 255, 217);}}"
-        ss = '''
+        var = f"QPushButton{{border: 1px solid {color.name()};border-radius: 20px;color: rgb(247, 255, 217);}}"
+        # fixed style sheet
+        fixed = '''
         QPushButton:hover{
             color:rgb(255,85,0);
             background-color:  rgb(247, 255, 217);
@@ -45,10 +47,10 @@ class button():
         }
         '''
         # set the style sheet
-        self.button.setStyleSheet(ss+grad)
+        self.button.setStyleSheet(fixed+var)
 
     # a function that is called when the timer times out
-    def timer_animate(self):
+    def timer_animate(self) -> None:
         if self.flag:
             self._animation.setDirection(QAbstractAnimation.Forward)
         else:

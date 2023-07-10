@@ -11,5 +11,5 @@ class Parser():
         return sp.sympify(expression)
     
     # parse the value and return a float
-    def parse_value(self, value : str):
+    def parse_value(self, value : str) -> float:
         return float(value)
