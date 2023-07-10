@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1000</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,8 +21,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>600</height>
+     <width>1000</width>
+     <height>700</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -35,24 +35,30 @@
     <pixmap resource="app.qrc">:/Background/back.jpg</pixmap>
    </property>
   </widget>
-  <widget class="QLabel" name="title">
+  <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>20</y>
-     <width>220</width>
-     <height>40</height>
+     <x>0</x>
+     <y>10</y>
+     <width>1001</width>
+     <height>80</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(255, 85, 0);</string>
-   </property>
-   <property name="text">
-    <string>Function  Plotter</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="title">
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 85, 0);</string>
+      </property>
+      <property name="text">
+       <string>Function  Plotter</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources>
