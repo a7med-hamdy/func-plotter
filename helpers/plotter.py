@@ -25,12 +25,14 @@ class Plotter(QWidget):
         
         self.canvas.axes = self.canvas.figure.add_subplot(111)
         self.setLayout(vertical_layout)
-        
-    def make_graph(self, expression, min_x, max_x) -> None:
-        x,y = self.__create_points(expression, min_x, max_x)
+    
+    # a function to plot the graph of the expression    
+    def make_graph(self, expression : sp.Expr, min_x : float, max_x : float) -> None:
+        x,y = self.create_points(expression, min_x, max_x)
         self.__plot(x, y)
-        
-    def __create_points(self, expression, min_x, max_x) -> tuple:
+    
+    # a function to create points from the expression
+    def create_points(self, expression : sp.Expr, min_x: float, max_x : float) -> tuple:
         # use the sympy expression to create list of points from min_x to max_x
         x = sp.Symbol("x")
         x_vals = np.linspace(min_x, max_x, num_points)
@@ -38,14 +40,18 @@ class Plotter(QWidget):
         y_vals = np.array([sp.lambdify(x, expression)(i) for i in x_vals])
         return x_vals, y_vals
         
-    def __plot(self, x, y) -> None:
+    # a helper function to plot the graph
+    def __plot(self, x : list, y : list) -> None:
         self.canvas.axes.clear()
         self.canvas.axes.set_title("Plot")
+        self.canvas.axes.set_xlim(min(x), max(x))
+        self.canvas.axes.set_ylim(min(y), max(y))
         self.canvas.axes.grid()
         self.canvas.axes.plot(x, y)
         self.canvas.draw()
         self.__show_plot()
         
+    # a helper function to show the plot with animation
     def __show_plot(self) -> None:
         self.show()
         self.effect = QGraphicsOpacityEffect()
