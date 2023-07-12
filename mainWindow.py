@@ -16,14 +16,20 @@ class MainWindow(QMainWindow):
         self.setFixedSize(1000, 700)
         self.setWindowTitle("App")
         self.Parser = Parser()
-        
+        self.center()
         # load the ui file
         loader = QUiLoader()
         self.setCentralWidget(loader.load(os.path.join("assets","gui.ui"), self))
         
         self.setup_ui()
         self.setup_plotter()
-        self.show()
+        
+    # center the window
+    def center(self):
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
         
     def setup_plotter(self) -> None:
         # plotter
