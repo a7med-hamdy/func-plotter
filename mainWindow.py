@@ -6,6 +6,7 @@ from config import *
 from helpers.Parser import Parser
 from ui.button import button
 from ui.feedback import feedback
+from ui.gif import LoadingGif
 from helpers.plotter import Plotter
 import os
 
@@ -33,14 +34,13 @@ class MainWindow(QMainWindow):
 
     # setup the ui
     def setup_ui(self) -> None:
-        # set appropriate fonts
-        # labels fonts
-        self.findChild(QLabel, "title").setFont(QFont(FONT_AV, 32))
-        self.findChild(QLabel, "label1").setFont(QFont("Consolas", 14))
-        self.findChild(QLabel, "label2").setFont(QFont("Consolas", 14))
-        self.findChild(QLabel, "label3").setFont(QFont("Consolas", 14))
+        self.setup_line_edits()
+        self.setup_buttons()
+        self.setup_labels()
         
         
+    
+    def setup_line_edits(self) -> None:
         # line edits fonts
         # expression
         self.function = self.findChild(QLineEdit, "function")
@@ -51,22 +51,38 @@ class MainWindow(QMainWindow):
         # maximum x
         self.max = self.findChild(QLineEdit, "max")
         self.max.setFont(QFont("Consolas", 16))
-        
+    
+    def setup_buttons(self) -> None:
         # evaluate button
         self.eval_button = button(self.findChild(QPushButton, "eval"))
         self.eval_button.button.setFont(QFont("Consolas", 16))
         self.eval_button.button.clicked.connect(self.handle_eval)
         
+    def setup_labels(self) -> None:
+        
         # feedback label
         self.feedback  = self.findChild(QLabel, "feedback")
         self.feedback.setFont(QFont("Consolas", 16))
         self.feedback = feedback(self.feedback)
+        
+        # gif label
+        gif = self.findChild(QLabel, "gif")
+        self.gif = LoadingGif(gif)
+        
+        # set appropriate fonts
+        # labels fonts
+        self.findChild(QLabel, "title").setFont(QFont(FONT_AV, 32))
+        self.findChild(QLabel, "label1").setFont(QFont("Consolas", 14))
+        self.findChild(QLabel, "label2").setFont(QFont("Consolas", 14))
+        self.findChild(QLabel, "label3").setFont(QFont("Consolas", 14))
     
     # a function that is called when the evalualte button is clicked
     def handle_eval(self)->None:
+        self.gif.startAnimation()
         
         args = self.parse_input()
         if args is None:
+            self.gif.stopAnimation()
             return
         # if everything is valid, hide the feedback label
         self.feedback.hide()
@@ -77,6 +93,8 @@ class MainWindow(QMainWindow):
         except Exception as e:
             self.plotter.hide()
             self.feedback.show(f'{e}.\n Please check your expression variables are all (x) small.')
+            
+        self.gif.stopAnimation()
             
     def parse_input(self)->tuple:
         # parse the expression

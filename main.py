@@ -4,7 +4,6 @@ import sys
 import os
 from PySide2.QtWidgets import QApplication
 from PySide2 import QtGui
-from PySide2.QtUiTools import QUiLoader
 from assets.my_resources_rc import *
     
 if __name__ == "__main__":

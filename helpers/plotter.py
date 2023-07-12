@@ -9,6 +9,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 import numpy as np
 import sympy as sp
+from config import *
 
 class Plotter(QWidget):
     
@@ -32,7 +33,7 @@ class Plotter(QWidget):
     def __create_points(self, expression, min_x, max_x) -> tuple:
         # use the sympy expression to create list of points from min_x to max_x
         x = sp.Symbol("x")
-        x_vals = np.linspace(min_x, max_x, 501)
+        x_vals = np.linspace(min_x, max_x, num_points)
         # ecaluate the expression at each point
         y_vals = np.array([sp.lambdify(x, expression)(i) for i in x_vals])
         return x_vals, y_vals

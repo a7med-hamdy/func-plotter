@@ -14,7 +14,7 @@ class button():
         self._animation = QVariantAnimation(
             self.button,
             startValue=0.0,
-            endValue=0.9999,
+            endValue=1.0,
             duration=1500
         )
         self.timer = QTimer() # timer to animate the button
