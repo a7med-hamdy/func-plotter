@@ -3,10 +3,10 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtUiTools import QUiLoader
 from config import *
-from Parser import Parser
-from button import button
-from feedback import feedback
-from plotter import Plotter
+from helpers.Parser import Parser
+from ui.button import button
+from ui.feedback import feedback
+from helpers.plotter import Plotter
 import os
 
 class MainWindow(QMainWindow):
@@ -14,14 +14,25 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setFixedSize(1000, 700)
         self.setWindowTitle("App")
-        
-        self.animations = []
         self.Parser = Parser()
+        
         # load the ui file
         loader = QUiLoader()
         self.setCentralWidget(loader.load(os.path.join("assets","gui.ui"), self))
+        
+        self.setup_ui()
+        self.setup_plotter()
+        self.show()
+        
+    def setup_plotter(self) -> None:
+        # plotter
+        self.plotter = Plotter()
+        plotter = self.findChild(QWidget, "Plotter")
+        plotter.setLayout(QVBoxLayout())
+        plotter.layout().addWidget(self.plotter)
 
-
+    # setup the ui
+    def setup_ui(self) -> None:
         # set appropriate fonts
         # labels fonts
         self.findChild(QLabel, "title").setFont(QFont(FONT_AV, 32))
@@ -50,26 +61,32 @@ class MainWindow(QMainWindow):
         self.feedback  = self.findChild(QLabel, "feedback")
         self.feedback.setFont(QFont("Consolas", 16))
         self.feedback = feedback(self.feedback)
-        
-        # plotter
-        self.plotter = Plotter()
-        plotter = self.findChild(QWidget, "Plotter")
-        plotter.setLayout(QVBoxLayout())
-        plotter.layout().addWidget(self.plotter)
-                
-        self.show()
-        
-
+    
     # a function that is called when the evalualte button is clicked
-    def handle_eval(self):
+    def handle_eval(self)->None:
+        
+        args = self.parse_input()
+        if args is None:
+            return
+        # if everything is valid, hide the feedback label
+        self.feedback.hide()
+        
+        #plor the graph using the plotter
+        try:
+            self.plotter.make_graph(args[0], args[1], args[2])
+        except Exception as e:
+            self.plotter.hide()
+            self.feedback.show(f'{e}.\n Please check your expression variables are all (x) small.')
+            
+    def parse_input(self)->tuple:
         # parse the expression
         try:
             expression = self.Parser.parse_expression(self.function.text())
             # print(expression)
         except Exception as e:
             self.plotter.hide()
-            self.feedback.show("Invalid expression, only * / + - ^ are allowed")
-            return 
+            self.feedback.show("Error, the expression is invalid.\n + - * / ^ are the only allowed operators")
+            return None
         
         # parse the minimum x value    
         try:
@@ -78,7 +95,7 @@ class MainWindow(QMainWindow):
         except Exception as e:
             self.plotter.hide()
             self.feedback.show("Invalid Minimum x value")
-            return
+            return None
         
         # parse the maximum x value
         try:
@@ -87,15 +104,11 @@ class MainWindow(QMainWindow):
         except Exception as e:
             self.plotter.hide()
             self.feedback.show("Invalid Maximum x value")
-            return
+            return None
 
         # check if the maximum x value is greater than the minimum x value
         if max_x <= min_x:
-            self.feedback.show("Maximum x value must be greater than minimum x value")
-            return 
-        
-        # if everything is valid, hide the feedback label
-        self.feedback.hide()
-        
-        #plor the graph usinh the plotter
-        self.plotter.make_graph(expression, min_x, max_x)
+            self.plotter.hide()
+            self.feedback.show("Maximum x value must be greater than Minimum x value")
+            return None
+        return expression, min_x, max_x
