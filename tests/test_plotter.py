@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, './') # for the future to setupt github actions
 
 from helpers.plotter import Plotter
+from helpers.thread import computeThread
 from config import num_points
 import pytest
 import sympy as sp
@@ -17,31 +18,41 @@ def app(qtbot):
 
     return plotter
 
-def test_create_points(app, qtbot):
-    x, y = app.create_points(sp.sympify("x^2-1"), -10, 10)
+@pytest.fixture
+def thread(qtbot):
+    thread = computeThread()
+    return thread
+
+def helper(x, y):
     assert len(x) == num_points
     assert len(y) == num_points
     assert x[0] == -10
     assert x[-1] == 10
     assert y[0] == 99
     assert y[-1] == 99
-    
-# test variable names other than x
 
-def test_create_points_other_var(app, qtbot):
-    plotter = Plotter()
-    with pytest.raises(Exception):
-        x, y = plotter.create_points("a^2-1", -10, 10)
+def test_create_points(thread, qtbot):
+    thread.set_expression(sp.sympify("x^2-1"))
+    thread.set_min_max_x(-10, 10)
+    thread.finished.connect(helper)
+    thread.start()
+    with qtbot.waitSignal(thread.finished):
+        pass
+    
         
-# test the whole plotting process
+#test the whole plotting process
 def test_make_graph(app, qtbot):
     app.make_graph(sp.sympify("x^2-1"), -10, 10)
+    with qtbot.waitSignal(app.thread.finished):
+        pass
     assert app.canvas.axes.get_title() == "Plot"
     assert app.canvas.axes.get_xbound() == (-10, 10)
     
 # test animation
 def test_animation(app, qtbot):
     app.make_graph(sp.sympify("x^2-1"), -10, 10)
+    with qtbot.waitSignal(app.thread.finished):
+        pass
     assert not app.isHidden()
     assert app.animation.finished
     

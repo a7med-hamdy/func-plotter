@@ -12,7 +12,7 @@ from helpers.thread import computeThread
 
 class Plotter(QWidget):
     
-    def __init__(self, width=50, height=4, dpi=100, stop_gif : callable = None):
+    def __init__(self, width=50, height=4, dpi=100, stop_gif : callable = None, error_handler : callable = None):
         super().__init__()
         
         # embed the matplotlib figure
@@ -25,6 +25,7 @@ class Plotter(QWidget):
         self.setLayout(vertical_layout) # set the layout
         self.stop_gif = stop_gif # a function to stop the gif
         self.thread = None # a thread to compute the points in the background
+        self.error_handler = error_handler # a function to handle errors
     
     # a function to plot the graph of the expression    
     def make_graph(self, expression : sp.Expr, min_x : float, max_x : float) -> None:
@@ -34,7 +35,9 @@ class Plotter(QWidget):
         self.thread.set_expression(expression) # set the expression
         self.thread.set_min_max_x(min_x, max_x) # set the min and max x
         self.thread.finished.connect(self.__plot) # connect the finished signal to the plot function
-        self.thread.finished.connect(lambda x,y : self.stop_gif()) # connect the finished signal to the stop gif function
+        self.thread.error.connect(self.error_handler) # connect the error signal to the error handler function
+        if self.stop_gif is not None:
+            self.thread.finished.connect(lambda x,y : self.stop_gif()) # connect the finished signal to the stop gif function
         self.thread.start()     # start the thread
     
     

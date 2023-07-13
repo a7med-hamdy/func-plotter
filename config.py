@@ -1,3 +1,11 @@
 FONT_CH = "Chopsic"
 FONT_AV = "Avengeance Heroic Avenger"
 num_points = 5001
+ERROR_WRONG_VARIABLE = 'Error: The variable must be "x"'
+ERROR_WRONG_EXPRESSION = "Error: The expression is invalid.\nPlease, check operators and brackets"
+ERROR_WRONG_MIN = "Error: Minimum x value must be a real number"
+ERROR_WRONG_MAX = "Error: Maximum x value must be a real number"
+ERROR_WRONG_BOUNDS = "Error: Maximum x value must be greater than Minimum x value"
+ERROR_INFINITE_MIN = "Error: Minimum x value must be finite"
+ERROR_INFINITE_MAX = "Error: Maximum x value must be finite"
+ERROR_EVLAUATE = "Error: Cannot evaluate the expression at the given x bounds"

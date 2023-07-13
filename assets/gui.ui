@@ -101,7 +101,7 @@ border: 2px solid rgb(255, 85, 0);
        <number>0</number>
       </property>
       <property name="placeholderText">
-       <string>x^2-1</string>
+       <string>ex : x^2-1</string>
       </property>
       <property name="clearButtonEnabled">
        <bool>true</bool>
@@ -142,7 +142,7 @@ border: 2px solid rgb(255, 85, 0);
        <set>Qt::AlignCenter</set>
       </property>
       <property name="placeholderText">
-       <string>100</string>
+       <string>ex : 100</string>
       </property>
       <property name="clearButtonEnabled">
        <bool>true</bool>
@@ -199,7 +199,7 @@ border: 2px solid rgb(255, 85, 0);
        <set>Qt::AlignCenter</set>
       </property>
       <property name="placeholderText">
-       <string>-100</string>
+       <string>ex : -100</string>
       </property>
       <property name="clearButtonEnabled">
        <bool>true</bool>

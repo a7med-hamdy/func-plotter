@@ -8,6 +8,7 @@ from ui.button import button
 from ui.feedback import feedback
 from ui.gif import LoadingGif
 from helpers.plotter import Plotter
+import sympy as sp
 import os
 
 class MainWindow(QMainWindow):
@@ -84,8 +85,6 @@ class MainWindow(QMainWindow):
     
     # a function that is called when the evalualte button is clicked
     def handle_eval(self)->None:
-        self.gif.startAnimation()
-        
         args = self.parse_input()
         if args is None:
             return
@@ -93,34 +92,33 @@ class MainWindow(QMainWindow):
         self.feedback.hide()
         
         #plor the graph using the plotter
+        self.gif.startAnimation()
         self.plotter.make_graph(args[0], args[1], args[2])
         try:
             pass
-        except TypeError as e:
-            self.plotter.hide()
-            self.feedback.show(f'Please check your function is of x (small)')
+        except TypeError:
+            self.report_error(ERROR_WRONG_VARIABLE)
             
     def parse_input(self)->tuple:
         # parse the expression
         try:
             expression = self.Parser.parse_expression(self.function.text())
-            # print(expression)
-        except Exception as e:
-            self.plotter.hide()
-            self.feedback.show("Error, the expression is invalid.\n + - * / ^ are the only allowed operators")
+        except sp.SympifyError:
+            self.report_error(ERROR_WRONG_EXPRESSION)
             return None
+        except RuntimeError:
+            self.report_error(ERROR_WRONG_VARIABLE)
+            return
         
         # parse the minimum x value    
         try:
             min_x = self.Parser.parse_value(self.min.text())
             # print(min_x)
         except ValueError:
-            self.plotter.hide()
-            self.feedback.show("Invalid Minimum x value")
+            self.report_error(ERROR_WRONG_MIN)
             return None
         except RuntimeError:
-            self.plotter.hide()
-            self.feedback.show("Minimum x value must be finite")
+            self.report_error(ERROR_INFINITE_MIN)
             return None
         
         # parse the maximum x value
@@ -129,17 +127,19 @@ class MainWindow(QMainWindow):
             max_x = self.Parser.parse_value(self.max.text())
             # print(max_x)
         except ValueError:
-            self.plotter.hide()
-            self.feedback.show("Invalid Maximum x value")
+            self.report_error(ERROR_WRONG_MAX)
             return None
         except RuntimeError:
-            self.plotter.hide()
-            self.feedback.show("Maximum x value must be finite")
+            self.report_error(ERROR_INFINITE_MAX)
             return None
 
         # check if the maximum x value is greater than the minimum x value
         if max_x <= min_x:
-            self.plotter.hide()
-            self.feedback.show("Maximum x value must be greater than Minimum x value")
+            self.report_error(ERROR_WRONG_BOUNDS)
             return None
         return expression, min_x, max_x
+    
+    # a function to report errors
+    def report_error(self, error : str) -> None:
+        self.plotter.hide()
+        self.feedback.show(str(error))

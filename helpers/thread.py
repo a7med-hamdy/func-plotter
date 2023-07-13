@@ -4,10 +4,11 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 import sympy as sp
 import numpy as np
-from config import num_points
+from config import num_points, ERROR_EVLAUATE
 
 class computeThread(QThread):
     finished = Signal(list, list)
+    error = Signal(str)
     def __init__(self, parent = None):
         super().__init__(parent)
     
@@ -20,8 +21,12 @@ class computeThread(QThread):
     
     # main thread function
     def run(self) -> None:
-        x, y = self.create_points(self.expression, self.min_x, self.max_x)
-        self.finished.emit(x, y)
+        # create points from the expression
+        try:
+            x, y = self.create_points(self.expression, self.min_x, self.max_x)
+            self.finished.emit(x, y)
+        except TypeError: # if an error occured while evaluating the expression
+            self.error.emit(ERROR_EVLAUATE)
         self.stop()
     
     # a function to create points from the expression
