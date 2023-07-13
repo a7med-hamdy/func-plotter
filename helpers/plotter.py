@@ -7,53 +7,52 @@ from matplotlib.figure import Figure
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-import numpy as np
 import sympy as sp
-from config import *
+from helpers.thread import computeThread
 
 class Plotter(QWidget):
     
-    def __init__(self, parent = None, width=50, height=4, dpi=100):
-
-        QWidget.__init__ ( self ,  parent )
+    def __init__(self, width=50, height=4, dpi=100, stop_gif : callable = None):
+        super().__init__()
         
+        # embed the matplotlib figure
         self.canvas = FigureCanvas(Figure(figsize = (width, height), dpi = dpi))
-        vertical_layout = QVBoxLayout()
-        toolbar = NavigationToolbar(self.canvas, self)
-        vertical_layout.addWidget(toolbar)
-        vertical_layout.addWidget(self.canvas)
-        
-        self.canvas.axes = self.canvas.figure.add_subplot(111)
-        self.setLayout(vertical_layout)
+        vertical_layout = QVBoxLayout() # create a vertical layout
+        toolbar = NavigationToolbar(self.canvas, self) # create a toolbar
+        vertical_layout.addWidget(toolbar) # add the toolbar to the layout
+        vertical_layout.addWidget(self.canvas)  # add the canvas to the layout
+        self.canvas.axes = self.canvas.figure.add_subplot(111) # add a subplot to the figure
+        self.setLayout(vertical_layout) # set the layout
+        self.stop_gif = stop_gif # a function to stop the gif
+        self.thread = None # a thread to compute the points in the background
     
     # a function to plot the graph of the expression    
     def make_graph(self, expression : sp.Expr, min_x : float, max_x : float) -> None:
-        x,y = self.create_points(expression, min_x, max_x)
-        self.__plot(x, y)
+        if self.thread is not None and self.thread.isRunning(): # if the thread is running return
+            return
+        self.thread : QThread= computeThread() # create a thread to compute the points in the background without freezing the ui
+        self.thread.set_expression(expression) # set the expression
+        self.thread.set_min_max_x(min_x, max_x) # set the min and max x
+        self.thread.finished.connect(self.__plot) # connect the finished signal to the plot function
+        self.thread.finished.connect(lambda x,y : self.stop_gif()) # connect the finished signal to the stop gif function
+        self.thread.start()     # start the thread
     
-    # a function to create points from the expression
-    def create_points(self, expression : sp.Expr, min_x: float, max_x : float) -> tuple:
-        # use the sympy expression to create list of points from min_x to max_x
-        x = sp.Symbol("x")
-        x_vals = np.linspace(min_x, max_x, num_points)
-        # ecaluate the expression at each point
-        y_vals = np.array([sp.lambdify(x, expression)(i) for i in x_vals])
-        return x_vals, y_vals
+    
         
     # a helper function to plot the graph
     def __plot(self, x : list, y : list) -> None:
-        self.canvas.axes.clear()
-        self.canvas.axes.set_title("Plot")
-        self.canvas.axes.set_xlim(min(x), max(x))
-        self.canvas.axes.set_ylim(min(y), max(y))
-        self.canvas.axes.grid()
-        self.canvas.axes.plot(x, y)
+        self.canvas.axes.clear() # clear the axes
+        self.canvas.axes.set_title("Plot") # set the title
+        self.canvas.axes.set_xlim(min(x), max(x)) # set the x limits
+        self.canvas.axes.grid() # show the grid
+        self.canvas.axes.plot(x, y) 
         self.canvas.draw()
         self.__show_plot()
         
     # a helper function to show the plot with animation
     def __show_plot(self) -> None:
         self.show()
+        # create an opacity effect
         self.effect = QGraphicsOpacityEffect()
         self.canvas.setGraphicsEffect(self.effect)
         self.animation = QPropertyAnimation(self.effect, b"opacity")

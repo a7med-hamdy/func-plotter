@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
         
     def setup_plotter(self) -> None:
         # plotter
-        self.plotter = Plotter()
+        self.plotter = Plotter(stop_gif= self.gif.stopAnimation)
         plotter = self.findChild(QWidget, "Plotter")
         plotter.setLayout(QVBoxLayout())
         plotter.layout().addWidget(self.plotter)
@@ -88,19 +88,17 @@ class MainWindow(QMainWindow):
         
         args = self.parse_input()
         if args is None:
-            self.gif.stopAnimation()
             return
         # if everything is valid, hide the feedback label
         self.feedback.hide()
         
         #plor the graph using the plotter
+        self.plotter.make_graph(args[0], args[1], args[2])
         try:
-            self.plotter.make_graph(args[0], args[1], args[2])
-        except Exception as e:
+            pass
+        except TypeError as e:
             self.plotter.hide()
-            self.feedback.show(f'{e}.\n Please check your expression variables are all (x) small.')
-            
-        self.gif.stopAnimation()
+            self.feedback.show(f'Please check your function is of x (small)')
             
     def parse_input(self)->tuple:
         # parse the expression
@@ -116,18 +114,27 @@ class MainWindow(QMainWindow):
         try:
             min_x = self.Parser.parse_value(self.min.text())
             # print(min_x)
-        except Exception as e:
+        except ValueError:
             self.plotter.hide()
             self.feedback.show("Invalid Minimum x value")
             return None
+        except RuntimeError:
+            self.plotter.hide()
+            self.feedback.show("Minimum x value must be finite")
+            return None
         
         # parse the maximum x value
+        
         try:
             max_x = self.Parser.parse_value(self.max.text())
             # print(max_x)
-        except Exception as e:
+        except ValueError:
             self.plotter.hide()
             self.feedback.show("Invalid Maximum x value")
+            return None
+        except RuntimeError:
+            self.plotter.hide()
+            self.feedback.show("Maximum x value must be finite")
             return None
 
         # check if the maximum x value is greater than the minimum x value

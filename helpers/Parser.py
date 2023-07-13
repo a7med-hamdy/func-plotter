@@ -12,4 +12,7 @@ class Parser():
     
     # parse the value and return a float
     def parse_value(self, value : str) -> float:
-        return float(value)
+        val = float(value)
+        if val == float("inf") or val == float('-inf'):
+            raise RuntimeError
+        return val

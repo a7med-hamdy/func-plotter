@@ -11,10 +11,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     id = QtGui.QFontDatabase.addApplicationFont(os.path.join("assets","Chopsic.otf"))
     id = QtGui.QFontDatabase.addApplicationFont(os.path.join("assets","AVENGEANCE.ttf"))
-    # if id != -1:
-    #     print("Font loaded successfully")
-    # else:
-    #     print("Failed to load font")
+
     splash = QSplashScreen(QtGui.QPixmap(os.path.join("assets","splash.png")))
     window = MainWindow()
     splash.show()

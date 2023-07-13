@@ -38,7 +38,6 @@ def test_make_graph(app, qtbot):
     app.make_graph(sp.sympify("x^2-1"), -10, 10)
     assert app.canvas.axes.get_title() == "Plot"
     assert app.canvas.axes.get_xbound() == (-10, 10)
-    assert app.canvas.axes.get_ybound() == (-1, 99)
     
 # test animation
 def test_animation(app, qtbot):

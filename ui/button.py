@@ -15,13 +15,13 @@ class button():
             self.button,
             startValue=0.0,
             endValue=1.0,
-            duration=1500
+            duration=1000
         )
         self.timer = QTimer() # timer to animate the button
         self._animation.valueChanged.connect(self._animate) 
         self.timer.timeout.connect(self.timer_animate)
         self._animate(0.0)# set the initial color of the button
-        self.timer.start(1500) # start the timer every 1.5 seconds
+        self.timer.start(1000) # start the timer every 1.5 seconds
         self.flag = True # flag to change the direction of animation and reverse it
     
     # a function that is called when the animation updates
