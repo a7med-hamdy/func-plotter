@@ -12,4 +12,8 @@ The GUI contains animations, a loading screen and GIFs, and a thread to compute 
 <img src = "https://github.com/a7med-hamdy/func-plotter/blob/main/readme/recip.jpg">
 
 - #### Display messages to the user to explain any wrong input
+<img src = "https://github.com/a7med-hamdy/func-plotter/blob/main/readme/var.jpg">
+<img src = "https://github.com/a7med-hamdy/func-plotter/blob/main/readme/expr.jpg">
+<img src = "https://github.com/a7med-hamdy/func-plotter/blob/main/readme/func.jpg">
+<img src = "https://github.com/a7med-hamdy/func-plotter/blob/main/readme/min.jpg">
 
