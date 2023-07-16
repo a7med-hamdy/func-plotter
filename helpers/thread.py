@@ -25,8 +25,8 @@ class computeThread(QThread):
         try:
             x, y = self.create_points(self.expression, self.min_x, self.max_x)
             self.finished.emit(x, y)
-        except TypeError: # if an error occured while evaluating the expression
-            self.error.emit(ERROR_EVLAUATE)
+        except NameError as e: # if an error occured while evaluating the expression
+            self.error.emit(ERROR_EVLAUATE + str(e))
         self.stop()
     
     # a function to create points from the expression

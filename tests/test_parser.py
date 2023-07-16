@@ -24,6 +24,11 @@ def test_false_expression():
     with pytest.raises(Exception):
         expr = p.parse_expression("x**2-")
         
+def test_wrong_variable():
+    p = Parser()
+    with pytest.raises(RuntimeError):
+        expr = p.parse_expression("y**2")
+        
 def test_parse_value():
     p = Parser()
     x = p.parse_value("2.655")

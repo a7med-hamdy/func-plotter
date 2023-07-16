@@ -4,7 +4,7 @@ from PySide2.QtWidgets import *
 
 
 class button():
-    def __init__(self, button: QPushButton):
+    def __init__(self, button: QPushButton, test: bool = False):
         self.button = button
         # 2 color to interpolate between them
         self.color1 = (255, 85, 0)
@@ -17,12 +17,13 @@ class button():
             endValue=1.0,
             duration=1000
         )
-        self.timer = QTimer() # timer to animate the button
-        self._animation.valueChanged.connect(self._animate) 
-        self.timer.timeout.connect(self.timer_animate)
-        self._animate(0.0)# set the initial color of the button
-        self.timer.start(1000) # start the timer every 1.5 seconds
-        self.flag = True # flag to change the direction of animation and reverse it
+        if not test:
+            self.timer = QTimer() # timer to animate the button
+            self._animation.valueChanged.connect(self._animate) 
+            self.timer.timeout.connect(self.timer_animate)
+            self._animate(0.0)# set the initial color of the button
+            self.timer.start(1000) # start the timer every 1.5 seconds
+            self.flag = True # flag to change the direction of animation and reverse it
     
     # a function that is called when the animation updates
     def _animate(self, value : float) -> None:

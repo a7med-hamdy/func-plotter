@@ -38,6 +38,7 @@ class Plotter(QWidget):
         self.thread.error.connect(self.error_handler) # connect the error signal to the error handler function
         if self.stop_gif is not None:
             self.thread.finished.connect(lambda x,y : self.stop_gif()) # connect the finished signal to the stop gif function
+            self.thread.error.connect(lambda x : self.stop_gif()) # connect the error signal to the stop gif function
         self.thread.start()     # start the thread
     
     

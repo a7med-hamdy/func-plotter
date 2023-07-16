@@ -12,12 +12,13 @@ import sympy as sp
 import os
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, test : bool = False):
         super().__init__()
         self.setFixedSize(1000, 700)
         self.setWindowTitle("App")
         self.Parser = Parser()
         self.center()
+        self.isTest = test
         # load the ui file
         loader = QUiLoader()
         self.setCentralWidget(loader.load(os.path.join("assets","gui.ui"), self))
@@ -27,14 +28,21 @@ class MainWindow(QMainWindow):
         
     # center the window
     def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
+        # Get the available geometry of the primary screen
+        screen = QGuiApplication.primaryScreen().availableGeometry()
+        
+        # Calculate the center point of the screen
+        center = screen.center()
+
+        # Calculate the top-left point of the window
+        top_left = center - self.rect().center()
+
+        # Set the position of the window
+        self.move(top_left)
         
     def setup_plotter(self) -> None:
         # plotter
-        self.plotter = Plotter(stop_gif= self.gif.stopAnimation)
+        self.plotter = Plotter(stop_gif= self.gif.stopAnimation, error_handler = self.report_error)
         plotter = self.findChild(QWidget, "Plotter")
         plotter.setLayout(QVBoxLayout())
         plotter.layout().addWidget(self.plotter)
@@ -61,7 +69,7 @@ class MainWindow(QMainWindow):
     
     def setup_buttons(self) -> None:
         # evaluate button
-        self.eval_button = button(self.findChild(QPushButton, "eval"))
+        self.eval_button = button(self.findChild(QPushButton, "eval"), self.isTest)
         self.eval_button.button.setFont(QFont("Consolas", 16))
         self.eval_button.button.clicked.connect(self.handle_eval)
         
@@ -113,7 +121,6 @@ class MainWindow(QMainWindow):
         # parse the minimum x value    
         try:
             min_x = self.Parser.parse_value(self.min.text())
-            # print(min_x)
         except ValueError:
             self.report_error(ERROR_WRONG_MIN)
             return None
@@ -125,7 +132,6 @@ class MainWindow(QMainWindow):
         
         try:
             max_x = self.Parser.parse_value(self.max.text())
-            # print(max_x)
         except ValueError:
             self.report_error(ERROR_WRONG_MAX)
             return None
